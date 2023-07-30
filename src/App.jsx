@@ -19,7 +19,7 @@ function App() {
        <Route path='/products' element={<Products/>}/>
        <Route path='/categories/:name' element={<CategoryProducts/>}/>
        <Route path='cart' element= {<Cart/>}/>
-       <Route path='*' element={<div>404</div>}/>
+       <Route path='*' element={<div className='h-[55vh] flex justify-center items-center text-4xl'>404</div>}/>
       </Routes>
      
       <Footer/>

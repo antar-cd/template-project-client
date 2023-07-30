@@ -1,10 +1,59 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { BsFillArrowRightCircleFill } from 'react-icons/bs'; // Remove the duplicate import
+import { BiPlus } from 'react-icons/bi'; 
+import { RiSubtractLine } from 'react-icons/ri';
+
+
 
 const Cart = () => {
+  const navigate = useNavigate()
+  const [total,setTotal] = useState(0)
     const carts = JSON.parse(localStorage.getItem('cart')) || []
 
-    if(!carts.length) <div>cart is Empty</div>
+    useEffect(() =>{
+      const total = carts.reduce((acc,item)=>{
+        return acc + (item.price * item.quantity)
+      },0)
+      setTotal(total)
+    },[carts])
+
+  const handleinc =(id) =>{
+    const updatedCart = carts.map(item =>{
+      if(item.id === id){
+        return{
+          ...item,
+          quantity: item.quantity + 1
+        }
+      }
+      return item
+    })
+    localStorage.setItem('cart', JSON.stringify(updatedCart))
+    navigate('/cart')
+  }
+  const handleDec = (id) =>{
+    const updatedCart = carts.map(item =>{
+      if(item.id === id){
+        return{
+          ...item,
+          quantity: item.quantity -1
+        }
+      }
+      return item
+    })
+    localStorage.setItem('cart',JSON.stringify(updatedCart))
+    navigate('/cart')
+  }
+
+  const removeProduct = (id) =>{
+    const updatedCart = carts.filter(item =>item.id !== id)
+    localStorage.setItem('cart', JSON.stringify(updatedCart))
+    navigate('/cart')
+  }
+
+    if(carts.length === 0){
+      return <div className="h-[55vh] flex justify-center items-center text-4xl">cart is Empty</div>
+    } 
   return (
     <div className="container mx-auto mt-10">
       <div className="flex shadow-md my-10">
@@ -39,21 +88,22 @@ const Cart = () => {
                 <span className="font-bold text-sm">{cart?.title}</span>
                 <span className="text-red-500 text-xs capitalize">{cart?.category}</span>
                 <div
-                  className="font-semibold hover:text-red-500 text-gray-500 text-xs"
-                  href="#"
+                  className="font-semibold hover:text-red-500 text-gray-500 text-xs cursor-pointer"
+                  href="#" onClick={() =>removeProduct(cart?.id)}
                 >
                   remove
                 </div>
               </div>
             </div>
             <div className="flex justify-center w-1/5">
-              <svg />
+            <RiSubtractLine className="cursor-pointer" size={25} color="gray"  onClick={() =>handleDec(cart?.id)} />
+            
               <input
                 className="mx-2 border text-center w-8"
                 type="text"
-                value={1}
+                value={cart?.quantity}
               />
-              <svg />
+              <BiPlus className="cursor-pointer" size={25} color="gray" onClick={() => handleinc(cart?.id)} />
             </div>
             <span className="text-center w-1/5 font-semibold text-sm">
               ${cart?.price}
@@ -67,8 +117,8 @@ const Cart = () => {
           }
           
           <Link to={'/products'}
-            className="flex font-semibold text-indigo-600 text-sm mt-10"
-          >Continue Reading 
+            className="flex font-semibold text-indigo-600 text-sm mt-10 gap-2"
+          >Continue Reading <BsFillArrowRightCircleFill size={25} color="blue" />
           </Link>
         </div>
         <div id="summary" className="w-1/4 px-8 py-10">
@@ -76,8 +126,8 @@ const Cart = () => {
             Order Summary
           </h1>
           <div className="flex justify-between mt-10 mb-5">
-            <span className="font-semibold text-sm uppercase">Items 3</span>
-            <span className="font-semibold text-sm">$500</span>
+            <span className="font-semibold text-sm uppercase">Items{carts?.length}</span>
+            <span className="font-semibold text-sm">{total?.toFixed(2)}$</span>
           </div>
           <div>
             <label className="font-medium inline-block mb-3 text-sm uppercase">
@@ -107,7 +157,7 @@ const Cart = () => {
           <div className="border-t mt-8">
             <div className="flex font-semibold justify-between py-6 text-sm uppercase">
               <span>Total Cost</span>
-              <span>$600</span>
+              <span>${(total + 10).toFixed(2)}</span>
             </div>
             <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
               CheckOut
