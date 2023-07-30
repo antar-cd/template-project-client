@@ -1,27 +1,27 @@
 
 import './App.css'
-import Contact from './Component/Contact/Contact'
-import Feature from './Component/Feature/Feature'
+
 import Footer from './Component/Footer/Footer'
-import Hero from './Component/Hero/Hero'
-
-
 import Navbar from './Component/Navbar/Navbar'
-import Products from './Component/Products/Products'
-import Statistic from './Component/Statistic/Statistic'
+import Product from './Component/Product/Product'
+import Home from './Page Layout/Home/Home'
+import {Routes,Route} from 'react-router-dom'
+import Products from './Page Layout/Products/Products'
+import CategoryProducts from './Page Layout/CategoryProducts/CategoryProducts'
+import Cart from './Page Layout/Cart/Cart'
 function App() {
   return (
     <>
       <Navbar/>
-      <Hero/>
-      <div className="flex flex-col text-center w-full">
-            <h2 className="text-xs text-indigo-500 tracking-widest font-medium title-font mb-1">PRODUCTS</h2>
-            <h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">MOST POPULAR PRODUCTS</h1>
-          </div>
-      <Products/>
-      <Feature/>
-      <Statistic/>
-      <Contact/>
+      <Routes>
+       <Route path='/' element={<Home/>}/>
+       <Route path='/products/:id' element={<Product/>}/>
+       <Route path='/products' element={<Products/>}/>
+       <Route path='/categories/:name' element={<CategoryProducts/>}/>
+       <Route path='cart' element= {<Cart/>}/>
+       <Route path='*' element={<div>404</div>}/>
+      </Routes>
+     
       <Footer/>
     </>
   )
